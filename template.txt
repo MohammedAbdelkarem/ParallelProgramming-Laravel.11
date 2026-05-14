@@ -1,0 +1,119 @@
+About This File:
+
+This file will be a small Docs to handle laravel new projects.
+This will be as a small API starter kit.
+
+=======================================================================================================================================
+Init Steps:
+
+- copy .env example
+- php artisan install:api
+- php artisan config:publish --all (Not Required)
+- php artisan key:generate
+- composer install (or update)
+- php artisn storage:link
+
+- Edit TODO:Template
+
+=======================================================================================================================================
+Ideas In This File:
+
+1- Profile auth handling and profile creation and managements
+2- Customer service cards
+3- System info: Contact-us - About-us - Privacy Policies - Term Of Services - FAQ (الاسئلة الشائعة)
+4- Stories
+5- Banners
+6- Notifications
+
+=======================================================================================================================================
+IMPORTANT:
+
+1- Don't forget to copy .htaccess in public folder for security issues.
+2- Copy config/_custom.php config file.
+
+3- In storage/app/public copy the defaults and .gitignore file.
+4- Copy Config Files and edit what is needed
+
+5- Copy bootstrap folder and check it in (app.php and providers.php)
+6- Check for jobs, rules and commands
+
+7- Add helpers to composer.json: for autoload then run composer dump-autoload
+,"files": [
+            "app/Helpers/MessageHelper.php",
+            "app/Helpers/General.php",
+            "app/Helpers/FileHelper.php",
+            "app/Helpers/ModelHelper.php",
+            "app/Helpers/ResponseHandler.php"
+        ]
+
+=======================================================================================================================================
+Packages (Mostly Used):
+
+- Name : Description 
+
+**Required**
+
+1- tymon/jwt-auth (For Auth)
+2- guzzlehttp/guzzle
+3- stevebauman/location (Required for login history)
+4- timwassenburg/laravel-service-generator (To generate service files)
+
+**Optional**
+
+1- codezero/laravel-unique-translation (To handle multi-lang translations fields)
+2- codezero/laravel-unique-translation (Work with spatie/laravel-translatable for unique translations)
+
+3- orangehill/iseed (Generate seed file from database table)
+4- maatwebsite/excel (To generate Excel files)
+
+5- spatie/laravel-medialibrary (To handle media in app) NOTE: this could be replaced with **storage trait**
+6- laravel-notification-channels/telegram (To handle telegram messages)
+
+7- misterspelik/laravel-pdf (To handle PDF file generation)
+8- kreait/laravel-firebase (To handle firebase notifications)
+
+9- ichtrojan/laravel-otp (Generate OTP) NOTE: This could be replaced with OTP trait
+
+=======================================================================================================================================
+Stubs: (Optional)
+
+- Controller Stub
+- Request Stub
+- Resource Stub
+- Service Stub : Replace the one in vendor/timwassenburg/laravel-service-generator
+
+=======================================================================================================================================
+Custom Middleware
+
+**Required**
+
+1- Tokens Middlewares	: CheckApiAccess - CheckOTPAccess - CheckRefreshAccess
+2- User Middlewares	: UserActive     - UserBanned	  - UserCompleted      - UserVerified (According to project)
+
+3- CheckBots		: Honeybot (Read more about it)
+4- CheckLang		: Handle System Lang
+
+5- CheckPerPage		: Handle $per_page params in request params for pagination
+6- DatabaseTransaction	: Handle Database Queries in transactions
+
+7- ForceJson		: ForceJson (Force request to be in json)
+8- XSSProtection	: XSS attack handler (Read more about XSS)
+
+=======================================================================================================================================
+Custom Traits
+
+**Required**
+
+1- UniqueKey 		: Generate OTP and unique string
+2- StringHelper 	: Handle strings in many ways
+3- StorageHelper 	: Hanlde storing and deleting files and directories (This is more required to handle media if You don't use medialibrary)
+
+**Not Required**
+
+1- TimeFormatter	: Used in formation time string the in many customized ways
+2- NotificationHelper	: Used to handle notifications cases
+
+=======================================================================================================================================
+Custom Lang files:
+
+Check in lang/custom/ar - lang/custom/en (extract what you need)

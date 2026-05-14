@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Constants;
+
+final class ExceptionMessages
+{
+    const MSG_NOT_ALLOWED                      = 'exception_messages.not_allowed';
+    const MSG_THIS_IS_NOT_YOUR_ROUTE                      = 'exception_messages.this_is_not_your_route';
+    const MSG_INVALID_CREDENTIALS              = 'exception_messages.invalid_credentials';
+    const MSG_NOT_AUTHORIZED                   = 'exception_messages.not_authorized';
+    const MSG_NOT_AUTHENTICATED                = 'exception_messages.unauthenticated';
+    const MSG_NO_CONTENT                       = 'exception_messages.no_content';
+    const MSG_METHOD_NOT_ALLOWED               = 'exception_messages.method_not_allowed';
+    const MSG_LANGUAGE_NOT_SUPPORTED           = 'exception_messages.language_not_supported';
+    const MSG_INVALID_OTP_CODE                 = 'exception_messages.invalid_OTP_code';
+    const MSG_FAILED                           = 'exception_messages.failed';
+    const MSG_DELETING_FAILED                  = 'exception_messages.deleting_failed';
+    const MSG_NO_PERMISSION                    = 'exception_messages.no_permission';
+    const MSG_RESOURCE_NOT_FOUND               = 'exception_messages.resource_not_Found';
+    const MSG_RESOURCE_NOT_FOUNDF              = 'exception_messages.resource_not_FoundF';
+    const MSG_URL_NOT_FOUND                    = 'exception_messages.URL_not_found';
+    const MSG_ITEM_NOT_FOUND                   = 'exception_messages.item_not_found';
+    const MSG_UNACTIVE_ACCOUNT                 = 'exception_messages.unactive_account';
+    const MSG_INCOMPLETE_ACCOUNT               = 'exception_messages.in_complete_account';
+    const MSG_IN_ACTIVE_ACCOUNT                = 'exception_messages.in_active_account';
+    const MSG_SERVICE_UNAVAILABLE              = 'exception_messages.service_unavailable';
+    const MSG_UNAUTHENTICATED                  = 'exception_messages.unauthenticated';
+    const MSG_NOT_REGISTERED                   = 'exception_messages.not_registered';
+    const MSG_DEVICE_NOT_ALLOWED_LOGIN_DIFFERENT_DEVICE           = 'exception_messages.device_not_allowed_login_different_device';
+    const MSG_FROZEN_ACCOUNT                                      = 'exception_messages.frozen_account';
+    const MSG_BANNED_ACCOUNT                                      = 'exception_messages.banned_account';
+    const MSG_TOO_MANY_REQUESTS                                   = 'exception_messages.too_many_requests';
+    const MSG_ACCEESS_DENIED                                      = 'exception_messages.access_denied';
+    const MSG_INVALID_TYPE                                        = 'exception_messages.invalid_type';
+    const MSG_INVALID_URL                                         = 'exception_messages.invalid_url';
+    const MSG_TOO_MANY_ATTEMPTS                                   = 'exception_messages.to_many_attempts';
+    const MSG_PHONE_NUMBER_USED_MANY_TIMES                        = 'exception_messages.phone_number_used_many_times';
+    const MSG_CANNOT_DELETE_THIS_FIELD                            = 'exception_messages.cannot_delete_this_field';
+    const MSG_CANNOT_DELETE_THIS_CATEGORY                         = 'exception_messages.cannot_delete_this_category';
+    const MSG_CANNOT_DELETE_THIS_SUBCATEGORY                      = 'exception_messages.cannot_delete_this_subcategory';
+    const MSG_CANNOT_DELETE_THIS_ITEM                             = 'exception_messages.cannot_delete_this_item';
+    const MSG_CANNOT_UPDATE_THIS_ROLE                             = 'exception_messages.cannot_update_this_role';
+    const MSG_CANNOT_DELETE_THIS_ROLE                             = 'exception_messages.cannot_delete_this_role';
+    const MSG_CANNOT_SET_TO_ACTIVE_CUZ_HAS_NO_MEDIA               = 'exception_messages.cannot_set_to_active_cuz_has_no_media';
+    const MSG_CAN_NOT_DELETE_CUZ_HAS_RELATED_ITEMS               = 'exception_messages.can_not_delete_cuz_has_related_items';
+    const MSG_QUESTION_ANSWERS_IS_CORRECT_ONLY_ONE               = 'exception_messages.question_answers_is_correct_only_one';
+    const MSG_QUESTION_ANSWERS_IS_CORRECT_MORE_THAN_ONE          = 'exception_messages.question_answers_is_correct_more_than_one';
+    const MSG_CANNOT_CREATE_CUZ_CONTEXT_IS_FREE                  = 'exception_messages.cannot_create_cuz_context_is_free';
+    const MSG_CUPON_NOT_FOUND                                    = 'exception_messages.cupon_not_found';
+    const MSG_INSUFFICIENT_BALANCE                                = 'exception_messages.insufficient_balance';
+    const MSG_CONTEXT_ALREADY_UNLOCKED                            = 'exception_messages.context_already_unlocked';
+    const MSG_ENTITY_HAS_SUB_ENTITIES_PURCHASED                   = 'exception_messages.entity_has_sub_entities_purchased';
+    const MSG_CAN_NOT_PUBLISH_CUZ_PARENT_IS_NOT_PUBLISHED         = 'exception_messages.can_not_publish_cuz_parent_is_not_published';
+    const MSG_CAN_NOT_PUBLISH_CUZ_HAS_NO_CONTENT                  = 'exception_messages.can_not_publish_cuz_has_no_content';
+    const MSG_CAN_NOT_PUBLISH_CUZ_HAS_NO_TEACHERS                  = 'exception_messages.can_not_publish_cuz_has_no_teachers';
+    const MSG_CAN_NOT_DELETE_CUZ_HAS_PURCHASED_STUDENTS            = 'exception_messages.can_not_delete_cuz_has_purchased_students';
+    const MSG_CAN_NOT_DELETE_CUZ_HAS_REGISTERED_STUDENTS          = 'exception_messages.can_not_delete_cuz_has_registered_students';
+    const MSG_HAS_TO_BE_DRAFT_BEFORE_DELETING_OR_UPDATING          = 'exception_messages.has_to_be_draft_before_deleting_or_updating';
+    const MSG_CAN_NOT_DELETE_CUZ_HAS_CONTENT                        = 'exception_messages.can_not_delete_cuz_has_content';
+    const MSG_CAN_NOT_DELETE_OR_UPDATE_CUZ_HAS_QUIZ                          = 'exception_messages.can_not_delete_or_update_cuz_has_quiz';
+    const MSG_CAN_NOT_DELETE_OR_UPDATE_CUZ_HAS_QUIZ_RESULTS                  = 'exception_messages.can_not_delete_or_update_cuz_has_quiz_results';
+    const MSG_CANNOT_DELETE_CUZ_HAS_USED                                    = 'exception_messages.cannot_delete_cuz_has_used';
+    const MSG_CAN_NOT_APPROVE_DRIVER_CUZ_SOME_DOCUMENTS_ARE_NOT_APPROVED      = 'exception_messages.can_not_approve_driver_cuz_some_documents_are_not_approved';
+    const MSG_ACCOUNT_IS_PENDING                                          = 'exception_messages.account_is_pending';
+    const MSG_ACCOUNT_IS_REJECTED                                          = 'exception_messages.account_is_rejected';
+    const MSG_ACCOUNT_IS_NOT_PENDING                                         = 'exception_messages.account_is_not_pending';
+    const MSG_CUSTOMER_IS_NOT_COMPANY                                        = 'exception_messages.customer_is_not_company';
+    const MSG_CUSTOMER_IS_NOT_GOVERNMENT                                        = 'exception_messages.customer_is_not_government';
+    const MSG_ALREADY_SUBMITTED_OFFER                                        = 'exception_messages.already_submitted_offer';
+    const MSG_INVALID_OFFER_TYPE                                            = 'exception_messages.invalid_offer_type';
+    const MSG_PRIVACY_POLICY_ALREADY_EXISTS_FOR_THIS_ACTOR                                            = 'exception_messages.privacy_policy_already_exists_for_this_actor';
+    const MSG_RECIEVING_OTP_INVALID                                            = 'exception_messages.recieving_otp_invalid';
+    CONST MSG_AMOUNT_BIGGER_THAN_AVAILABLE = 'exception_messages.amount_bigger_than_available';
+    CONST MSG_NOT_JOINED_IN_THIS_ROOM = 'exception_messages.not_joined_in_this_room';
+    CONST MSG_NO_ACTIVE_TRIP = 'exception_messages.no_active_trip';
+    CONST MSG_VEHICLE_CAPACITY_EXCEEDED = 'exception_messages.vehicle_capacity_exceeded';
+    CONST MSG_VEHICLE_PLATE_OR_OWNERSHIP_REQUIRED = 'exception_messages.vehicle_plate_or_ownership_required';
+    CONST MSG_BAYAN_VEHICLE_LOOKUP_FAILED = 'exception_messages.bayan_vehicle_lookup_failed';
+}
+

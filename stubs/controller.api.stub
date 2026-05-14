@@ -1,0 +1,59 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Constants\ApiMessages;
+use {{ rootNamespace }}Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+
+class {{ class }} extends Controller
+{
+    public function __construct(
+        protected Service $service
+    ) {
+    }
+
+    public function index(): JsonResponse
+    {
+        return success(
+            $this->service->index(),
+            ApiMessages::MSG_SUCCESS,
+            Resource::class,
+            true
+        );
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        return createdSuccess(
+            $this->service->store($request->validated()),
+            ApiMessages::MSG_CREATED
+        );
+    }
+
+    public function show(string $id): JsonResponse
+    {
+        return success(
+            $this->service->show($id),
+            ApiMessages::MSG_SUCCESS,
+            Resource::class
+        );
+    }
+
+    public function update(Request $request, string $id): JsonResponse
+    {
+        return success(
+            $this->service->update($id, $request->validated()),
+            ApiMessages::MSG_UPDATED
+        );
+    }
+
+    public function destroy(string $id): JsonResponse
+    {
+        return success(
+            $this->service->destroy($id),
+            ApiMessages::MSG_DELETED,
+        );
+    }
+}

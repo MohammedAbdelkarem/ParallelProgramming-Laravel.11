@@ -1,0 +1,34 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Http\Request;
+use App\Constants\RouteNames;
+use App\Http\Resources\BaseJsonResource;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class {{ class }} extends BaseJsonResource
+{
+    protected function resourceArray($request)
+    {
+        $data = [
+            'id' => $this->id,
+        ];
+        
+        return $data;
+    }
+
+    protected function extendForHttp(array $data, $request)
+    {
+        $routeName = $request->route()->getName();
+
+        switch ($routeName) 
+        {
+            //case RouteNames::EXAMPLE:
+            //    $data['foo'] = 'bar';
+            //    break;
+        }
+
+        return $data;
+    }
+}
