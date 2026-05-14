@@ -21,7 +21,6 @@ use App\Http\Controllers\System\SystemSettingController;
 use Illuminate\Support\Facades\Route;
 
 
-
 /*
 |--------------------------------------------------------------------------
 | Admin API Routes
