@@ -182,50 +182,24 @@ class User extends Authenticatable implements JWTSubject , HasMedia
      * Relations
      */
 
-    
-    public function currentProfile()
+    public function wallet(): HasOne
     {
-        if($this->isAdmin())
-            return $this->adminProfile;
-        if ($this->isDriver())
-            return $this->driver;
-        if ($this->isDriverCompany())
-            return $this->driverCompany;
-        if ($this->isCustomClearenceCompany())
-            return $this->customClearenceCompany;
-        if ($this->isCustomer())
-            return $this->customer;
-
-        // Default: customer (the user itself)
-        return $this;
+        return $this->hasOne(Wallet::class, "user_id");
     }
 
-    public function currentProfileId()
+    public function sentTransactions()
     {
-        if($this->isAdmin())
-            return $this->adminProfile->id;
-        if ($this->isDriver())
-            return $this->driver->id;
-        if ($this->isDriverCompany())
-            return $this->driverCompany->id;
-        if ($this->isCustomClearenceCompany())
-            return $this->customClearenceCompany->id;
-        if ($this->isCustomer())
-            return $this->customer->id;
+        return $this->morphMany(WalletTransaction::class, 'from');
     }
 
-    public function currentProfileType()
+    public function receivedTransactions()
     {
-        if($this->isAdmin())
-            return AdminProfile::class;
-        if ($this->isDriver())
-            return Driver::class;
-        if ($this->isDriverCompany())
-            return DriverCompany::class;
-        if ($this->isCustomClearenceCompany())
-            return CustomClearenceCompany::class;
-        if ($this->isCustomer())
-            return Customer::class;
+        return $this->morphMany(WalletTransaction::class, 'to');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 
 

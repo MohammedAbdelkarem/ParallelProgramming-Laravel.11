@@ -21,9 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api/admin')
                 ->group(base_path('routes/admin.php'));
 
-            // Route::middleware(['api', 'xss', 'json', 'per_page', 'db_transaction', 'throttle:api'])
-            //     ->prefix('api/user')
-            //     ->group(base_path('routes/user.php'));
+            Route::middleware(['api', 'xss', 'json', 'per_page', 'db_transaction', 'throttle:api'])
+                ->prefix('api/user')
+                ->group(base_path('routes/user.php'));
         }
     )
     //added

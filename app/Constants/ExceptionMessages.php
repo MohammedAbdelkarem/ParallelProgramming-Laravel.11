@@ -7,6 +7,7 @@ final class ExceptionMessages
     const MSG_NOT_ALLOWED                      = 'exception_messages.not_allowed';
     const MSG_THIS_IS_NOT_YOUR_ROUTE                      = 'exception_messages.this_is_not_your_route';
     const MSG_INVALID_CREDENTIALS              = 'exception_messages.invalid_credentials';
+    const MSG_PRODUCT_STOCK_NOT_ENOUGH         = 'exception_messages.product_stock_not_enough';
     const MSG_NOT_AUTHORIZED                   = 'exception_messages.not_authorized';
     const MSG_NOT_AUTHENTICATED                = 'exception_messages.unauthenticated';
     const MSG_NO_CONTENT                       = 'exception_messages.no_content';

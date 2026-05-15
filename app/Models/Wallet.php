@@ -1,6 +1,6 @@
 <?php
 
-namespace {{ namespace }};
+namespace App\Models;
 
 use App\Constants\MediaCollection;
 use App\Constants\Resources;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 //use Spatie\MediaLibrary\HasMedia;
 //use Spatie\MediaLibrary\InteractsWithMedia;
 
-class {{ class }} extends Model //implements HasMedia
+class Wallet extends Model //implements HasMedia
 {
     use HasFactory;
     //use HasFactory , InteractsWithMedia;
@@ -19,11 +19,6 @@ class {{ class }} extends Model //implements HasMedia
         'id'
     ];
 
-    //protected static function booted()
-    //{
-    //    static::addGlobalScope(new ExampleScope);
-    //}
-
     //public function registerMediaCollections(): void
     //{
     //    $this->addMediaCollection(MediaCollection::EXAMPLE_COLLECTION)->singleFile();
@@ -31,7 +26,7 @@ class {{ class }} extends Model //implements HasMedia
 
 
     /**
-     * @return \App\Models\{{ class }}
+     * @return \App\Models\Wallet
      */
     public static function findByIdOrFail($id, $with = [], $withTrashed = false, $selectedColumns = null)
     {
@@ -39,10 +34,22 @@ class {{ class }} extends Model //implements HasMedia
             self::class,
             $id,
             GenderEnum::MALE,
-            Resources::ITEM,
+            Resources::RES_WALLET,
             $with,
             $withTrashed,
             $selectedColumns
         );
+    }
+
+    // Polymorphic owner (customer, driver, company, platform)
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Wallet transactions
+    public function transactions()
+    {
+        return $this->hasMany(WalletTransaction::class);
     }
 }

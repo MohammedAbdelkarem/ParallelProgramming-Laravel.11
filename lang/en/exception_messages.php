@@ -8,6 +8,7 @@ return [
     'no_content'                        => 'No content',
     'deleting_failed'                   => 'Delete failed',
     'no_permission'                     => 'Permission denied',
+    'product_stock_not_enough'          => 'Not enough stock for the requested product',
     'this_is_not_your_route'            => 'You have to go with the suitable role, access denied for this route',
     'method_not_allowed'                => 'Method not allowed',
     'resource_not_FoundF'               => ':resource not found',

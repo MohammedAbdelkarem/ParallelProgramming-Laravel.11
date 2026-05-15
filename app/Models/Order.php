@@ -1,6 +1,6 @@
 <?php
 
-namespace {{ namespace }};
+namespace App\Models;
 
 use App\Constants\MediaCollection;
 use App\Constants\Resources;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 //use Spatie\MediaLibrary\HasMedia;
 //use Spatie\MediaLibrary\InteractsWithMedia;
 
-class {{ class }} extends Model //implements HasMedia
+class Order extends Model //implements HasMedia
 {
     use HasFactory;
     //use HasFactory , InteractsWithMedia;
@@ -31,7 +31,7 @@ class {{ class }} extends Model //implements HasMedia
 
 
     /**
-     * @return \App\Models\{{ class }}
+     * @return \App\Models\Order
      */
     public static function findByIdOrFail($id, $with = [], $withTrashed = false, $selectedColumns = null)
     {
@@ -44,5 +44,31 @@ class {{ class }} extends Model //implements HasMedia
             $withTrashed,
             $selectedColumns
         );
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function walletTransactions()
+    {
+        return $this->morphMany(WalletTransaction::class, 'reference');
+    }
+
+    public function scopeFilter($query , $data)
+    {
+        return $query
+            ->when(isset($data['status']) , function($q) use ($data){
+                $q->where('status' , $data['status']);
+            })
+            ->when(! auth()->user()->isAdmin(), function($q){
+                $q->where('user_id' , auth()->id());
+            });
     }
 }

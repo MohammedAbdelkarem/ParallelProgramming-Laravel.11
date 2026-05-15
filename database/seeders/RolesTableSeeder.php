@@ -40,35 +40,8 @@ class RolesTableSeeder extends Seeder
             2 => 
             array (
                 'id' => 3,
-                'name' => 'Driver',
-                'description' => 'System Driver.',
-                'created_at' => '2025-01-12 10:03:49',
-                'updated_at' => '2025-01-12 10:03:49',
-                'created_by' => NULL,
-            ),
-            3 => 
-            array (
-                'id' => 4,
-                'name' => 'Customer',
-                'description' => 'System Customer.',
-                'created_at' => '2025-01-12 10:03:49',
-                'updated_at' => '2025-01-12 10:03:49',
-                'created_by' => NULL,
-            ),
-            4 => 
-            array (
-                'id' => 5,
-                'name' => 'Drivers Company',
-                'description' => 'System Company.',
-                'created_at' => '2025-01-12 10:03:49',
-                'updated_at' => '2025-01-12 10:03:49',
-                'created_by' => NULL,
-            ),
-            5 => 
-            array (
-                'id' => 6,
-                'name' => 'Custom Clearence Company',
-                'description' => 'System Company.',
+                'name' => 'User',
+                'description' => 'System User.',
                 'created_at' => '2025-01-12 10:03:49',
                 'updated_at' => '2025-01-12 10:03:49',
                 'created_by' => NULL,

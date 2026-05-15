@@ -9,13 +9,14 @@ use App\Http\Controllers\Administration\CustomerController;
 use App\Http\Controllers\Administration\DriverCompanyController;
 use App\Http\Controllers\Administration\DriverController;
 use App\Http\Controllers\Administration\Finance\WalletController;
-use App\Http\Controllers\Administration\ZATCAController;
 use App\Http\Controllers\Administration\Log\BanLogController;
-use App\Http\Controllers\Administration\OrderController;
 use App\Http\Controllers\Administration\PrivacyPolicy\PrivacyPolicyController;
 use App\Http\Controllers\Administration\Profile\AdminProfileController;
 use App\Http\Controllers\Administration\Profile\UserProfileController;
 use App\Http\Controllers\Administration\SellPoint\SellPointController;
+use App\Http\Controllers\Administration\ZATCAController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\System\Notification\NotificationController;
 use App\Http\Controllers\System\SystemSettingController;
 use Illuminate\Support\Facades\Route;
@@ -118,79 +119,22 @@ Route::group(['middleware' => ['auth:api', "is_admin", 'token.access_api', 'user
         Route::delete("/{id}", "destroy");
     });
 
-    //Privacy Policy
-    Route::prefix("privace-policy")->controller(PrivacyPolicyController::class)->group(function () {
-        Route::get("/", "get");
-        Route::post("/create", "create");
-        Route::post("/update/{id}", "update");
-    });
-
     //transactions
     Route::prefix("transactions")->controller(WalletController::class)->group(function () {
         Route::get("/wallet", "getMyWallet");
-        Route::get("/actor-profile/{id}", "getActorProfile");
         Route::post("/transfer", "transfer");
-        Route::patch("/archive/{settlement_id}", "archive");
-        Route::get("/settlements", "getSettlements");
-        Route::get("/settlements/{id}", "showSettlement");
         Route::get("/sent", "getSentTransactions");
         Route::get("/received", "getReceivedTransactions");
-        Route::post("/update-fee-settings/{wallet_id}", "updateWithdrawalFeeSettings");
     });
 
-    //Drivers
-    Route::prefix("drivers")->controller(DriverController::class)->group(function () {
-        Route::get("/by-status", "getDriversByStatus")->name(RouteNames::DRIVER_BY_STATUS);
-        Route::get("/show/{id}", "showDriver")->name(RouteNames::DRIVER_SHOW_FOR_ADMIN);
-        Route::post("/approve-saudi-join-request", "approveSaudiJoinRequest")->name(RouteNames::APPROVE_SAUDI_JOIN_REQUEST);
-        Route::post("/approve-saudi-employee-join-request", "approveSaudiEmployeeJoinRequest")->name(RouteNames::APPROVE_SAUDI_EMPLOYEE_JOIN_REQUEST);
-        Route::post("/approve-non-saudi-employee-join-request", "approveNonSaudiEmployeeJoinRequest")->name(RouteNames::APPROVE_NON_SAUDI_EMPLOYEE_JOIN_REQUEST);
-        Route::post("/reject-driver/{id}", "rejectDriver");
-    });
+    //Products
+    Route::apiResource("/products", ProductController::class);
 
-    //Driver Companies
-    Route::prefix("driver-companies")->controller(DriverCompanyController::class)->group(function () {
-        Route::get("/by-status", "getDriverCompaniesByStatus")->name(RouteNames::DRIVER_COMPANY_BY_STATUS);
-        Route::get("/show/{id}", "showDriverCompany")->name(RouteNames::DRIVER_COMPANY_SHOW_FOR_ADMIN);
-        Route::post("/approve-driver-company-request", "approveDriverCompany")->name(RouteNames::APPROVE_DRIVER_COMPANY_REQUEST);
-        Route::post("/reject-driver-company/{id}", "rejectDriverCompany");
-    });
+    //Orders 
 
-    //Driver Companies
-    Route::prefix("custom-clearence-company")->controller(CustomClearenceCompanyController::class)->group(function () {
-        Route::get("/by-status", "getCustomClearenceCopmaniesByStatus")->name(RouteNames::CUSTOM_CLEARENCE_COMPANY_BY_STATUS);
-        Route::get("/show/{id}", "showCustomClearenceCompany")->name(RouteNames::CUSTOM_CLEARENCE_COMPANY_SHOW_FOR_ADMIN);
-        Route::post("/approve-custom-clearence-company-request", "approveCustomClearenceCompany")->name(RouteNames::APPROVE_CUSTOM_CLEARENCE_COMPNAY_REQUEST);
-        Route::post("/reject-custom-clearence-company/{id}", "rejectCustomClearenceCompany");
-    });
-
-    // ZATCA
-    Route::prefix("zatca")->controller(ZATCAController::class)->group(function () {
-        Route::post("/generate", "generate");
-        Route::get("/active", "getActive");
-    });
-
-    //Customers
-    Route::prefix("customers")->controller(CustomerController::class)->group(function () {
-        Route::get("/by-status", "getCustomersByStatus")->name(RouteNames::CUSTOMER_BY_STATUS);
-        Route::get("/show/{id}", "showCustomer")->name(RouteNames::CUSTOMER_SHOW_FOR_ADMIN);
-        Route::post("/approve-single-customer-request", "approveSingleCustomer")->name(RouteNames::APPROVE_SINGLE_CUSTOMER_REQUEST);
-        Route::post("/approve-company-customer-request", "approveCompanyCustomer")->name(RouteNames::APPROVE_COMPANY_CUSTOMER_REQUEST);
-        Route::post("/approve-governorate-customer-request", "approveGovernorateCustomer")->name(RouteNames::APPROVE_GOVERNORATE_CUSTOMER_REQUEST);
-        Route::post("/reject-customer/{id}", "rejectCustomer");
-    });
-
-    //Complaints
-    Route::prefix("complaints")->controller(ComplaintController::class)->group(function () {
-        Route::get("/index", "index");
-        Route::get("/show/{id}" , "show");
-        Route::patch("/archive/{id}", "archive");
-    });
-
-    //Order
     Route::prefix("orders")->controller(OrderController::class)->group(function () {
-        Route::get("/get", "get");
-        Route::get("/show/{id}", "show");
+        Route::get("/", "get");
+        Route::patch("/{orderId}/change-status", "changeOrderStatus");
     });
-    
+ 
 });

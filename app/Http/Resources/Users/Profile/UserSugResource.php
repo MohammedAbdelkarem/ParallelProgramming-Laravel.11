@@ -31,9 +31,6 @@ class UserSugResource extends JsonResource
             "role_name"     => $this->role->name,
             "account_status" => $this->account_status,
         ];
-
-        $data['wallet'] = WalletResource::make($this->whenLoaded('wallet'));
-
         return $data;
     }
 }

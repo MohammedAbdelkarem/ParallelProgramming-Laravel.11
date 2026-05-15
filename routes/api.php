@@ -79,16 +79,7 @@ Route::group(['middleware' => ['is_user', 'auth:api', 'token.access_api', 'user.
 Route::group([], function () {
     //Auth
     Route::controller(AuthController::class)->group(function () {
-        Route::post("/register/saudi-driver", "registerSaudiDriver")->middleware('bots')->name('registerSaudiDriver');
-        Route::post("/login/driver", "loginDriver")->middleware('bots')->name('loginDriver');
-        Route::post("/register/single-customer", "registerSingleCustomer")->middleware('bots')->name('registerSingleCustomer');
-        Route::post("/login/customer", "loginCustomer")->middleware('bots')->name('loginCustomer');
-        Route::post("/register/company-customer", "registerCompanyCustomer")->middleware('bots')->name('registerCompanyCustomer');
-        Route::post("/register/governorate-customer", "registerGovernorateCustomer")->middleware('bots')->name('registerGovernorateCustomer');
-        Route::post("/register/driver-company", "registerDriverCompany")->middleware('bots')->name('registerDriverCompany');
-        Route::post("/login/driver-company", "loginDriverCompany")->middleware('bots')->name('loginDriverCompany');
-        Route::post("/register/custom-clearence-company", "registerCustomClearenceCompany")->middleware('bots')->name('registerCustomClearenceCompany');
-        Route::post("/login/custom-clearence-company", "loginCustomClearenceCompany")->middleware('bots')->name('loginCustomClearenceCompany');
+        Route::post("/login/user", "loginUser")->middleware('bots')->name('loginUser');
     });
 
     //Profile

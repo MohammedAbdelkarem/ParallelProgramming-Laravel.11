@@ -3,11 +3,13 @@
 namespace Database\Seeders;
 
 use App\Models\Administration\Profile\AdminProfile;
+use App\Models\Order;
 use App\Models\User;
 use App\Models\Users\Product\Product;
 use App\Models\Users\Profile\Address;
 use App\Models\Users\Profile\LoginHistory;
 use App\Models\Users\Profile\UserProfile;
+use App\Models\Wallet;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -59,10 +61,40 @@ class UsersTableSeeder extends Seeder
                 'created_at' => '2025-01-12 10:09:07',
                 'updated_at' => '2025-01-12 10:09:07',
             ),
+            2 =>
+            array(
+                'id' => 3,
+                'role_id' => 3,
+                'name' => 'Template User',
+                'phone_number' => '+963900000000',
+                'email' => 'user@email.com',
+                'birth_date' => null,
+                'is_male' => true,
+                'language' => 'en',
+                'active_notifications' => 1,
+                'deactive_at' => NULL,
+                'account_verified_at' => '2025-01-12 10:09:07',
+                'deleted_at' => NULL,
+                'created_at' => '2025-01-12 10:09:07',
+                'updated_at' => '2025-01-12 10:09:07',
+            ),
         ));
 
-        User::find(1)->wallet()->create([]);
-        
+        Wallet::create([
+            'user_id' => 1
+        ]);
+        Wallet::create([
+            'user_id' => 2
+        ]);
+        Wallet::create([
+            'user_id' => 3,
+            'balance' => 100000
+        ]);
+
+
+
+
+
         LoginHistory::factory()->count(7)->create([
             "user_id" => 1
         ]);

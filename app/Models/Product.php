@@ -1,6 +1,6 @@
 <?php
 
-namespace {{ namespace }};
+namespace App\Models;
 
 use App\Constants\MediaCollection;
 use App\Constants\Resources;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 //use Spatie\MediaLibrary\HasMedia;
 //use Spatie\MediaLibrary\InteractsWithMedia;
 
-class {{ class }} extends Model //implements HasMedia
+class Product extends Model //implements HasMedia
 {
     use HasFactory;
     //use HasFactory , InteractsWithMedia;
@@ -31,7 +31,7 @@ class {{ class }} extends Model //implements HasMedia
 
 
     /**
-     * @return \App\Models\{{ class }}
+     * @return \App\Models\Product
      */
     public static function findByIdOrFail($id, $with = [], $withTrashed = false, $selectedColumns = null)
     {
@@ -44,5 +44,10 @@ class {{ class }} extends Model //implements HasMedia
             $withTrashed,
             $selectedColumns
         );
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 }

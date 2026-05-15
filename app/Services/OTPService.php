@@ -113,24 +113,24 @@ class OTPService extends MainService
             //invalidate the token
             JWTAuth::invalidate(JWTAuth::getToken());
 
-            if($user->isDriver())
-            {
-                $data["driver_type"] = $user->driver->driver_type;
-                $data["working_status"] = $user->driver->working_status;
-                $data["driver_id"] = $user->driver->id;
-            }
-            else if($user->isDriverCompany())
-            {
-                $data["driver_company_id"] = $user->driverCompany->id;
-            }
-            else if($user->isCustomClearenceCompany())
-            {
-                $data["custom_clearence_company_id"] = $user->customClearenceCompany->id;
-            }
-            else if($user->isCustomer())
-            {
-                $data["customer_id"] = $user->customer->id;
-            }
+            // if($user->isDriver())
+            // {
+            //     $data["driver_type"] = $user->driver->driver_type;
+            //     $data["working_status"] = $user->driver->working_status;
+            //     $data["driver_id"] = $user->driver->id;
+            // }
+            // else if($user->isDriverCompany())
+            // {
+            //     $data["driver_company_id"] = $user->driverCompany->id;
+            // }
+            // else if($user->isCustomClearenceCompany())
+            // {
+            //     $data["custom_clearence_company_id"] = $user->customClearenceCompany->id;
+            // }
+            // else if($user->isCustomer())
+            // {
+            //     $data["customer_id"] = $user->customer->id;
+            // }
 
             $data["tokens"] = app(AuthService::class)->generateTokens($user, $loginHistory->id);
             $data["status"] = $status;

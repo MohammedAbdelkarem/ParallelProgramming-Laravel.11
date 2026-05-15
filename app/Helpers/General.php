@@ -229,11 +229,9 @@ if (!function_exists('getActorByModel')) {
     function getActorByModel($model_path)
     {
         $data = [
-            Driver::class                => ActorTypeEnum::DRIVER->value,
-            DriverCompany::class         => ActorTypeEnum::DRIVER_COMPANY->value,
-            CustomClearenceCompany::class => ActorTypeEnum::CUSTOM_CLEARENCE_COMPANY->value,
-            Customer::class              => ActorTypeEnum::CUSTOMER->value,
+            
             AdminProfile::class              => ActorTypeEnum::ADMIN->value,
+            User::class              => ActorTypeEnum::USER->value,
         ];
 
         return $data[$model_path] ?? null;

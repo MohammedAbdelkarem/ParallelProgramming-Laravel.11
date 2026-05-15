@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\BmiClassification;
+use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,13 +25,13 @@ class DatabaseSeeder extends Seeder
 
         // $this->call(NotificationsTableSeeder::class);
 
-        $this->call(DriverCompanySeeder::class);
-        $this->call(CustomClearenceCompanySeeder::class);
-        $this->call(DriverSeeder::class);
-        $this->call(CustomerSeeder::class);
         $this->call(SettingSeeder::class);
         $this->call(PrivacyPolicySeeder::class);
-        $this->call(ZatcaCredentialsSeeder::class);
+
+        Product::factory()->count(50)->create();
+        Order::factory()->count(20)->create();
+
+
 
 
 
