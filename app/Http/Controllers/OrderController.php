@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\ApiMessages;
+use App\Http\Requests\Order\AddToCartRequest;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 
@@ -22,10 +23,10 @@ class OrderController extends Controller
         );
     }
 
-    public function addToCart(Request $request)
+    public function addToCart(AddToCartRequest $request)
     {
         return createdSuccess(
-            $this->orderService->addToCart($request->all()),
+            $this->orderService->addToCart($request->validated()),
             ApiMessages::MSG_SUCCESS,
         );
     }
