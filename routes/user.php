@@ -1,12 +1,7 @@
 <?php
 
-use App\Constants\RouteNames;
-use App\Http\Controllers\DriverCompany\ChatController;
-use App\Http\Controllers\DriverCompany\DriverCompanyController;
-use App\Http\Controllers\General\ComplaintController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\Users\Auth\AuthController;
 use App\Http\Controllers\Users\Finance\WalletController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,31 +16,42 @@ use Illuminate\Support\Facades\Route;
 
 // No Auth Needed
 Route::middleware([])->group(function () {
-    
+
 });
 
 //Auth Needed
 Route::group(['middleware' => ['auth:api', "is_user", 'token.access_api', 'user.active', 'user.verified']], function () {
-    
+
     //transactions
     Route::prefix("transactions")->controller(WalletController::class)->group(function () {
         Route::get("/wallet", "getMyWallet");
-        Route::post("/transfer", "transfer");
+        Route::post("/transfer", "transfer")
+            ->name('user.transactions.transfer')
+            ->middleware('aop.performance:user.transactions.transfer');
+
         Route::get("/sent", "getSentTransactions");
         Route::get("/received", "getReceivedTransactions");
     });
 
     //Products
     Route::prefix("products")->controller(ProductController::class)->group(function () {
-        Route::get("/get", "index");
+        Route::get("/get", "index")
+            ->name('user.products.index')
+            ->middleware('aop.performance:user.products.index');
     });
-
 
     //Orders
     Route::prefix("orders")->controller(OrderController::class)->group(function () {
-        Route::get("/", "get");
-        Route::post('add' , 'addToCart');
-        Route::delete('/remove/{id}' , 'removeFromCart');
+        Route::get("/", "get")
+            ->name('user.orders.index')
+            ->middleware('aop.performance:user.orders.index');
+
+        Route::post('add', 'addToCart')
+            ->name('user.orders.add')
+            ->middleware('aop.performance:user.orders.add');
+
+        Route::delete('/remove/{id}', 'removeFromCart')->name('user.orders.remove')
+            ->middleware('aop.performance:user.orders.remove');
     });
-    
+
 });

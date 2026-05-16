@@ -3,24 +3,15 @@
 use App\Constants\RouteNames;
 use App\Http\Controllers\Administration\AdminHomeController;
 use App\Http\Controllers\Administration\Auth\AuthController;
-use App\Http\Controllers\Administration\ComplaintController;
-use App\Http\Controllers\Administration\CustomClearenceCompanyController;
-use App\Http\Controllers\Administration\CustomerController;
-use App\Http\Controllers\Administration\DriverCompanyController;
-use App\Http\Controllers\Administration\DriverController;
 use App\Http\Controllers\Administration\Finance\WalletController;
 use App\Http\Controllers\Administration\Log\BanLogController;
-use App\Http\Controllers\Administration\PrivacyPolicy\PrivacyPolicyController;
 use App\Http\Controllers\Administration\Profile\AdminProfileController;
 use App\Http\Controllers\Administration\Profile\UserProfileController;
-use App\Http\Controllers\Administration\SellPoint\SellPointController;
-use App\Http\Controllers\Administration\ZATCAController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\System\Notification\NotificationController;
 use App\Http\Controllers\System\SystemSettingController;
 use Illuminate\Support\Facades\Route;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +28,10 @@ Route::middleware([])->group(function () {
         Route::post("/login", "login")->name('login');
     });
     Route::controller(AdminHomeController::class)->group(function () {
-        Route::post('processing/{value}' , 'processing')->withoutMiddleware(['broadcasting.encoder']);
+        Route::post('processing/{value}', 'processing')
+            ->withoutMiddleware(['broadcasting.encoder'])
+            ->name('admin.processing.run')
+            ->middleware('aop.performance:admin.processing.run');
     });
 });
 
@@ -69,7 +63,7 @@ Route::group(['middleware' => ['auth:api', "is_admin", 'token.access_api', 'user
         Route::get("/sugs", "adminSugs");
         Route::get("/list", "index")->name(RouteNames::ADMINS_LIST);
         Route::get("/{id}", "show");
-        //Only super admin can access this routes
+                                                                   //Only super admin can access this routes
         Route::middleware(['is_super_admin'])->group(function () { //TODO:NEED CHECK FOR DYNAMIC AND POLICIES
             Route::post("/", "store");
             Route::put("/{id}", "update");
@@ -104,7 +98,7 @@ Route::group(['middleware' => ['auth:api', "is_admin", 'token.access_api', 'user
 
     //System Info
     Route::prefix("system")->group(function () {
-        
+
         Route::apiResource('/settings', SystemSettingController::class);
     });
 
@@ -130,11 +124,14 @@ Route::group(['middleware' => ['auth:api', "is_admin", 'token.access_api', 'user
     //Products
     Route::apiResource("/products", ProductController::class);
 
-    //Orders 
+    //Orders
 
     Route::prefix("orders")->controller(OrderController::class)->group(function () {
         Route::get("/", "get");
-        Route::patch("/{orderId}/change-status", "changeOrderStatus");
+
+        Route::patch("/{orderId}/change-status", "changeOrderStatus")
+            ->name('admin.orders.change-status')
+            ->middleware('aop.performance:admin.orders.change-status');
     });
- 
+
 });

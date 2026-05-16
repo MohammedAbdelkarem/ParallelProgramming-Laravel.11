@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Constants\ApiMessages;
@@ -11,8 +10,17 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     public function __construct(
-        protected ProductService $productService
-    ) {}
+        protected ProductService $productService,
+    ) {
+        $this->middleware('aop.performance:admin.products.index')
+            ->only('index');
+
+        $this->middleware('aop.performance:admin.products.store')
+            ->only('store');
+
+        $this->middleware('aop.performance:admin.products.update')
+            ->only('update');
+    }
 
     public function index(Request $request)
     {
