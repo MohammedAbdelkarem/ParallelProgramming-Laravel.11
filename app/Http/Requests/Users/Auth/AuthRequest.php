@@ -1,12 +1,9 @@
 <?php
-
 namespace App\Http\Requests\Users\Auth;
 
-use App\Enums\GenderEnum;
-use App\Rules\PhoneNumberRule;
-use App\Rules\ShiftsOverlappingRule;
-use Illuminate\Validation\Rule;
 use App\Http\Requests\BaseApiRequest;
+use App\Rules\PhoneNumberRule;
+use Illuminate\Validation\Rule;
 
 class AuthRequest extends BaseApiRequest
 {
@@ -15,6 +12,7 @@ class AuthRequest extends BaseApiRequest
      */
     public function authorize(): bool
     {
+
         return true;
     }
 
@@ -26,15 +24,23 @@ class AuthRequest extends BaseApiRequest
     public function rules(): array
     {
         return match ($this->route()->getActionMethod()) {
-            "loginUser" => $this->loginUserRules(),
+            "loginUser"    => $this->loginUserRules(),
+            "registerUser" => $this->registerUserRules(),
         };
     }
 
-    
+    public function registerUserRules()
+    {
+        return [
+            'phone_number' => ['required', new PhoneNumberRule(), Rule::unique('users', 'phone_number')],
+            'email'        => ['required', 'email', Rule::unique('users', 'email')],
+        ];
+    }
+
     public function loginUserRules()
     {
         return [
-            'phone_number' => ['required', new PhoneNumberRule() , Rule::exists('users' , 'phone_number')->where('role_id' , 3)],
+            'phone_number' => ['required', new PhoneNumberRule(), Rule::exists('users', 'phone_number')->where('role_id', 3)],
         ];
     }
 

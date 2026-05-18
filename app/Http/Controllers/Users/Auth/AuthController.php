@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Users\Auth;
 
 use App\Constants\ApiMessages;
@@ -11,6 +10,7 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
+
     public function __construct(
         protected AuthService $authService
     ) {}
@@ -19,6 +19,15 @@ class AuthController extends Controller
     {
         return createdSuccess(
             $this->authService->loginUser($request->validated()),
+            ApiMessages::MSG_SUCCESS,
+        );
+    }
+
+    public function registerUser(AuthRequest $request): JsonResponse
+    {
+        //dd($request->validated()['phone_number']);
+        return createdSuccess(
+            $this->authService->register($request->validated()),
             ApiMessages::MSG_SUCCESS,
         );
     }

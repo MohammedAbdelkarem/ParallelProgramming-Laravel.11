@@ -1,22 +1,13 @@
 <?php
 
-use Illuminate\Http\Request;
 use App\Constants\RouteNames;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OTPController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Users\UserHomeController;
-use App\Http\Controllers\System\Info\FAQController;
-use App\Http\Controllers\System\Info\TosController;
-use App\Http\Controllers\Users\Auth\AuthController;
-use App\Http\Controllers\System\Info\AboutUsController;
-use App\Http\Controllers\System\Info\ContactUsController;
-use App\Http\Controllers\Users\Profile\ProfileController;
-use App\Http\Controllers\System\Info\PrivacyPolicyController;
-use App\Http\Controllers\Users\Profile\NumberUpdateController;
 use App\Http\Controllers\System\Notification\NotificationController;
-use App\Http\Controllers\System\CustomerServiceCard\CustomerServiceCardController;
-use App\Http\Controllers\Administration\CLevel\CLevelController;
+use App\Http\Controllers\Users\Auth\AuthController;
+use App\Http\Controllers\Users\Profile\NumberUpdateController;
+use App\Http\Controllers\Users\Profile\ProfileController;
+use App\Http\Controllers\Users\UserHomeController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,13 +71,13 @@ Route::group([], function () {
     //Auth
     Route::controller(AuthController::class)->group(function () {
         Route::post("/login/user", "loginUser")->middleware('bots')->name('loginUser');
+        Route::post("/register/user", "registerUser")->name('registerUser');
     });
 
     //Profile
     Route::prefix('profile')->controller(ProfileController::class)->group(function () {
         Route::get("/{id}", "show");
     });
-
 
     //Notifications
     Route::prefix("notifications")->controller(NotificationController::class)->group(function () {
