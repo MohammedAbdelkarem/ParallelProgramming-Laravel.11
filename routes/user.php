@@ -23,7 +23,7 @@ Route::middleware([])->group(function () {
 Route::group(['middleware' => ['auth:api', "is_user", 'token.access_api', 'user.active', 'user.verified']], function () {
 
     //transactions
-    Route::prefix("transactions")->controller(WalletController::class)->group(function () {
+    Route::middleware('circuit.breaker:transactions')->prefix("transactions")->controller(WalletController::class)->group(function () {
         Route::get("/wallet", "getMyWallet");
         Route::post("/transfer", "transfer")
             ->name('user.transactions.transfer')
@@ -34,14 +34,14 @@ Route::group(['middleware' => ['auth:api', "is_user", 'token.access_api', 'user.
     });
 
     //Products
-    Route::prefix("products")->controller(ProductController::class)->group(function () {
+    Route::middleware('circuit.breaker:products')->prefix("products")->controller(ProductController::class)->group(function () {
         Route::get("/get", "index")
             ->name('user.products.index')
             ->middleware('aop.performance:user.products.index');
     });
 
     //Orders
-    Route::prefix("orders")->controller(OrderController::class)->group(function () {
+    Route::middleware('circuit.breaker:orders')->prefix("orders")->controller(OrderController::class)->group(function () {
         Route::get("/", "get")
             ->name('user.orders.index')
             ->middleware('aop.performance:user.orders.index');

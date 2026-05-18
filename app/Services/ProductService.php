@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class ProductService.
@@ -22,12 +23,19 @@ class ProductService
         return Product::create($data);
     }
 
-    public function update($id , $data)
+    public function update($id, $data)
     {
-        $product = Product::findByIdOrFail($id);
+        return DB::transaction(function () use ($id, $data) {
 
-        $product->update($data);
+            // Lock the row for update
+            $product = Product::where('id', $id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        return $product;
+            $product->update($data);
+
+            return $product;
+        });
     }
+
 }

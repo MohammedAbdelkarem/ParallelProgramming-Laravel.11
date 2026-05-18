@@ -68,6 +68,14 @@ Route::group(['middleware' => ['is_user', 'auth:api', 'token.access_api', 'user.
 
 //No Auth Needed
 Route::group([], function () {
+
+    Route::get('/health', function () {
+        return response()->json([
+            'status' => 'UP',
+            'message' => 'OK',
+            'data' => []
+        ]);
+    });
     //Auth
     Route::controller(AuthController::class)->group(function () {
         Route::post("/login/user", "loginUser")->middleware('bots')->name('loginUser');

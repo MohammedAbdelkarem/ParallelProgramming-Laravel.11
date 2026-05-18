@@ -2,6 +2,7 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+    App\Providers\HorizonServiceProvider::class,
     Bl\FatooraZatca\FatooraZatcaServiceProvider::class,
+    Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 ];

@@ -58,6 +58,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             //AOP Middleware
             'aop.performance'      => \App\Http\Middleware\Aop\PerformanceMonitoringMiddleware::class,
+            'circuit.breaker'       => \App\Http\Middleware\CircuitBreakerMiddleware::class,
         ]);
         $middleware->append(\App\Http\Middleware\CheckLang::class);
     })
