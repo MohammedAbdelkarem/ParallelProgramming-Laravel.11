@@ -13,15 +13,15 @@ return Application::configure(basePath: dirname(__DIR__))
         channels: __DIR__ . '/../routes/channels.php',
         health: '/up',
         then: function () {
-            Route::middleware(['api', 'xss', 'json', 'per_page', 'db_transaction', 'throttle:api'])
+            Route::middleware(['api', 'xss', 'json', 'per_page', 'throttle:api'])
                 ->prefix('api/')
                 ->group(base_path('routes/api.php'));
 
-            Route::middleware(['api', 'xss', 'json', 'per_page', 'db_transaction', 'throttle:api'])
+            Route::middleware(['api', 'xss', 'json', 'per_page', 'throttle:api'])
                 ->prefix('api/admin')
                 ->group(base_path('routes/admin.php'));
 
-            Route::middleware(['api', 'xss', 'json', 'per_page', 'db_transaction', 'throttle:api'])
+            Route::middleware(['api', 'xss', 'json', 'per_page', 'throttle:api'])
                 ->prefix('api/user')
                 ->group(base_path('routes/user.php'));
         }
@@ -58,6 +58,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             //AOP Middleware
             'aop.performance'      => \App\Http\Middleware\Aop\PerformanceMonitoringMiddleware::class,
+            'circuit.breaker'       => \App\Http\Middleware\CircuitBreakerMiddleware::class,
         ]);
         $middleware->append(\App\Http\Middleware\CheckLang::class);
     })

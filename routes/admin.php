@@ -114,7 +114,7 @@ Route::group(['middleware' => ['auth:api', "is_admin", 'token.access_api', 'user
     });
 
     //transactions
-    Route::prefix("transactions")->controller(WalletController::class)->group(function () {
+    Route::middleware('circuit.breaker:transactions')->prefix("transactions")->controller(WalletController::class)->group(function () {
         Route::get("/wallet", "getMyWallet");
         Route::post("/transfer", "transfer");
         Route::get("/sent", "getSentTransactions");
@@ -122,12 +122,17 @@ Route::group(['middleware' => ['auth:api', "is_admin", 'token.access_api', 'user
     });
 
     //Products
-    Route::apiResource("/products", ProductController::class);
+    Route::middleware('circuit.breaker:products')->apiResource("/products", ProductController::class);
 
     //Orders
 
-    Route::prefix("orders")->controller(OrderController::class)->group(function () {
+    Route::middleware('circuit.breaker:orders')->prefix("orders")->controller(OrderController::class)->group(function () {
         Route::get("/", "get");
+
+        Route::get("index", "getReports");
+
+
+        Route::get("/report", "generateReport");
 
         Route::patch("/{orderId}/change-status", "changeOrderStatus")
             ->name('admin.orders.change-status')

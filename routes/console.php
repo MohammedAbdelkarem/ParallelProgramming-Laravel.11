@@ -26,11 +26,6 @@ Schedule::command('app:delete-tokens')
     ->runInBackground()
     ->withoutOverlapping();
 
+//Report Generation Command / cron job
+Schedule::command('reports:generate')->dailyAt('04:00');
 
-//Logisti
-Schedule::command('logisti:check-expiry')
-    ->dailyAt('08:00')
-    ->runInBackground()
-    ->withoutOverlapping();
-
-//e-learning

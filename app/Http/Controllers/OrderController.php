@@ -23,6 +23,14 @@ class OrderController extends Controller
         );
     }
 
+    public function generateReport(Request $request)
+    {
+        return Success(
+            $this->orderService->generate(),
+            ApiMessages::MSG_SUCCESS,
+        );
+    }
+
     public function addToCart(AddToCartRequest $request)
     {
         return createdSuccess(
@@ -46,6 +54,16 @@ class OrderController extends Controller
         return Success(
             $this->orderService->changeOrderStatus($orderId , $request->status),
             ApiMessages::MSG_SUCCESS,
+        );
+    }
+
+    public function getReports(Request $request)
+    {
+        return Success(
+            $this->orderService->getReports(),
+            ApiMessages::MSG_SUCCESS,
+            null,
+            $request->has('per_page')
         );
     }
 }
