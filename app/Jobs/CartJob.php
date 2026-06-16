@@ -11,13 +11,12 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 
 
 class CartJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    ;
 
     public $tries = 3; // retry up to 3 times
 
@@ -39,7 +38,7 @@ class CartJob implements ShouldQueue
      */
     public function handle(): void
     {
-        \DB::transaction(function () {
+        DB::transaction(function () {
 
             // Lock the order row
             $orderId = app(OrderService::class)->getOrderId();

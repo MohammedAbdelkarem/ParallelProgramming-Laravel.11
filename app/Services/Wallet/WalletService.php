@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
 use App\Traits\NotificationHelper;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -41,17 +42,28 @@ class WalletService
 
     public function utilityTransfer($from, $to, float $amount, $reference, $notes)
     {
-        return DB::transaction(function () use ($from, $to, $amount, $reference, $notes) {
-            // Always lock wallets in the same order to prevent deadlocks
-            $walletA = Wallet::where('id', min($from, $to))->lockForUpdate()->firstOrFail();
+        // 1️⃣ إنشاء القفل الموزع على مستوى الـ RAM (ينتهي تلقائياً بعد 10 ثوانٍ)
+        $lock = Cache::lock("lock:wallet:transfer:from:{$from}", 10);
 
+        // 2️⃣ محاولة الحصول على القفل فوراً، إذا فشل (بسبب طلب متزامن) يرتد الكود هنا دون انتظار
+        if (! $lock->get()) {
+            return forbiddenFailure(
+                ['wallet_id' => $from],
+                "هناك عملية تحويل معلقة قيد المعالجة حالياً لهذه المحفظة، يرجى الانتظار."
+            );
+        }
+
+        // 3️⃣ تنفيذ العملية المالية بأمان بعد ضمان انفراد هذا الطلب بالسيرفر
+        $result = DB::transaction(function () use ($from, $to, $amount, $reference, $notes) {
+            
+            // ترتيب الأقفال لمنع الـ Deadlock داخل قاعدة البيانات كما هو في كودك الأصلي
+            $walletA = Wallet::where('id', min($from, $to))->lockForUpdate()->firstOrFail();
             $walletB = Wallet::where('id', max($from, $to))->lockForUpdate()->firstOrFail();
 
-            // Now assign them back to from/to
             $fromWallet = $from == $walletA->id ? $walletA : $walletB;
             $toWallet   = $to   == $walletA->id ? $walletA : $walletB;
 
-            // Check balance AFTER locking
+            // التحقق من الرصيد
             if ($fromWallet->balance < $amount) {
                 return forbiddenFailure(
                     ['available' => (int)$fromWallet->balance, 'amount' => $amount],
@@ -59,7 +71,7 @@ class WalletService
                 );
             }
 
-            // Resolve polymorphic types dynamically
+            // تجهيز البيانات الديناميكية (Polymorphic)
             $fromType = get_class($fromWallet->user);
             $toType   = get_class($toWallet->user);
             $refType  = Order::class;
@@ -68,7 +80,7 @@ class WalletService
             $toName   = class_basename($toType);
             $refName  = class_basename($reference) ?? null;
 
-            // 1️⃣ Debit sender wallet
+            // 🟢 خصم المحفظة المرسِلة وتسجيل المعاملة
             WalletTransaction::create([
                 'wallet_id' => $fromWallet->id,
                 'type' => WalletTransactionEnum::DEBIT->value,
@@ -82,10 +94,9 @@ class WalletService
                 'description' => "Debit from {$fromName} to {$toName} for {$refName}",
                 'notes' => $notes,
             ]);
-
             $fromWallet->decrement('balance', $amount);
 
-            // 2️⃣ Credit receiver wallet
+            // 🔵 شحن المحفظة المستقبلة وتسجيل المعاملة
             WalletTransaction::create([
                 'wallet_id' => $toWallet->id,
                 'type' => WalletTransactionEnum::CREDIT->value,
@@ -99,14 +110,20 @@ class WalletService
                 'description' => "Credit to {$toName} from {$fromName} for {$refName}",
                 'notes' => $notes,
             ]);
-
             $toWallet->increment('balance', $amount);
 
-            // 3️⃣ Update order status only if applicable
+            // تحديث حالة الطلب إن وُجد
             if ($reference instanceof Order) {
                 $reference->update(['status' => OrderStatusEnum::PAID->value]);
             }
+
+            return true;
         });
+
+        // 4️⃣ تحرير القفل الموزع يدوياً فور انتهاء المعاملة بنجاح أو فشل الرصيد لفتح المجال للطلبات التالية
+        $lock->release();
+
+        return $result;
     }
 
 

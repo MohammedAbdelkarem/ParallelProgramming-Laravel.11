@@ -20,6 +20,7 @@
         "laravel/tinker": "^2.9",
         "orangehill/iseed": "*",
         "phpseclib/phpseclib": "~3.0",
+        "predis/predis": "^3.5",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-medialibrary": "*",
         "spatie/laravel-translatable": "*",
