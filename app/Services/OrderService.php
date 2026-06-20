@@ -215,6 +215,9 @@ class OrderService
             'quantity' => $data['quantity'],
         ]);
 
+        $this->processProductStock($data['product_id'], $data['quantity']);
+        $this->processOrderData($order->id, $product->price * $data['quantity'], $data['quantity']);
+
 
         return $orderItem->fresh();
     }

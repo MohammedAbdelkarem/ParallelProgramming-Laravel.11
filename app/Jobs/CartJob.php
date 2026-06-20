@@ -55,18 +55,6 @@ class CartJob implements ShouldQueue
                 $product, 
                 $this->data
             );
-
-            app(OrderService::class)->processProductStock(
-                $this->data['product_id'], 
-                $this->data['quantity']
-            );
-
-            app(OrderService::class)->processOrderData(
-                $order->id, 
-                $orderItem->price, 
-                $orderItem->quantity, 
-                true
-            );
         });
     }
 
