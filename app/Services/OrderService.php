@@ -208,7 +208,7 @@ class OrderService
     {
         $orderItem = OrderItem::create([
             'order_id' => $order->id,
-            'user_id' => auth()->id(),
+            'user_id' => $data['user_id'],
             'product_id' => $data['product_id'],
             'original_price' => $product->price,
             'price' => $product->price * $data['quantity'],
