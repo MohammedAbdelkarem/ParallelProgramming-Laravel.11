@@ -41,7 +41,7 @@ class CartJob implements ShouldQueue
         DB::transaction(function () {
 
             // Lock the order row
-            $orderId = app(OrderService::class)->getOrderId();
+            $orderId = app(OrderService::class)->getOrderId($this->data['user_id']);
             $order = Order::where('id', $orderId)->lockForUpdate()->firstOrFail();
 
             // Lock the product row
@@ -49,11 +49,6 @@ class CartJob implements ShouldQueue
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            // Now perform all operations safely
-            app(OrderService::class)->checkProductStock(
-                $this->data['product_id'], 
-                $this->data['quantity']
-            );
 
             $orderItem = app(OrderService::class)->createOrderItem(
                 $order, 

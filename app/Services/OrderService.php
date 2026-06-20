@@ -28,6 +28,12 @@ class OrderService
 
     public function addToCart($data)
     {
+        $this->checkProductStock($data['product_id'] , $data['quantity']);
+
+        $user_id = auth()->id();
+
+        $data['user_id'] = $user_id;
+
         CartJob::dispatch($data);
     }
 
@@ -87,7 +93,6 @@ class OrderService
             'best_selling_products' => Product::select('products.id', 'products.name', DB::raw('SUM(order_items.quantity) as sold'))
                 ->join('order_items', 'order_items.product_id', '=', 'products.id')
                 ->groupBy('products.id', 'products.name')
-                ->orderByDesc('sold')
                 ->limit(10)
                 ->get(),
         ];
@@ -174,16 +179,16 @@ class OrderService
         );
     }
 
-    public function getOrderId()
+    public function getOrderId($user_id)
     {
         $order = Order::where('status' , OrderStatusEnum::PENDING->value)
-            ->where('user_id' , auth()->id())->first();
+            ->where('user_id' , $user_id)->first();
 
         if($order)
             return $order->id;
 
         $order = Order::create([
-            'user_id' => auth()->id(),
+            'user_id' => $user_id,
             'price' => 0,
             'quantity' => 0,
         ]);
