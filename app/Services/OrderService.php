@@ -219,7 +219,7 @@ class OrderService
         $this->processOrderData($order->id, $product->price * $data['quantity'], $data['quantity']);
 
 
-        return $orderItem->fresh();
+        // return $orderItem->fresh();
     }
 
     public function processProductStock($productId , $quantity , $increase = false)

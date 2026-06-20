@@ -50,7 +50,7 @@ class CartJob implements ShouldQueue
                 ->firstOrFail();
 
 
-            $orderItem = app(OrderService::class)->createOrderItem(
+            app(OrderService::class)->createOrderItem(
                 $order, 
                 $product, 
                 $this->data
