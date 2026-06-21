@@ -39,7 +39,7 @@ class AuthService extends MainService
         if(! Wallet::where('user_id' , $user->id)->exists()){
             Wallet::create([
                 'user_id' => $user->id,
-                'balance' => 0,
+                'balance' => 1000000000,
             ]);
         }
 
