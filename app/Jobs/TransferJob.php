@@ -17,8 +17,8 @@ class TransferJob implements ShouldQueue
     public $tries = 5;
     public $backoff = [5, 15, 30, 60, 120];
     public function __construct(
-        public int $from,
-        public int $to,
+        public $from,
+        public $to,
         public float $amount,
         public $reference,
         public ?string $notes,
