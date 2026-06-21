@@ -21,7 +21,8 @@ class TransferJob implements ShouldQueue
         public int $to,
         public float $amount,
         public $reference,
-        public ?string $notes
+        public ?string $notes,
+        public $user_id
     ) {
         // Set the queue name for this job
         $this->onQueue('transfer');
@@ -35,7 +36,8 @@ class TransferJob implements ShouldQueue
             $this->to,
             $this->amount,
             $this->reference,
-            $this->notes
+            $this->notes,
+            $this->user_id
         );
     }
 
