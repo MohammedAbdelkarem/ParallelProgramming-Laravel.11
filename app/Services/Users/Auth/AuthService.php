@@ -5,6 +5,7 @@ use App\Models\JWTPersonalTokens;
 use App\Models\User;
 use App\Models\Users\Profile\LoginHistory;
 use App\Models\Users\Profile\UserDevice;
+use App\Models\Wallet;
 use App\Services\Base\ContextService;
 use App\Services\JWTTokensService;
 use App\Services\MainService;
@@ -34,6 +35,13 @@ class AuthService extends MainService
             'email'        => $validatedData['email'],
             // 'account_status' => AccountStatusEnum::PENDING->value,
         ]);
+
+        if(! Wallet::where('user_id' , $user->id)->exists()){
+            Wallet::create([
+                'user_id' => $user->id,
+                'balance' => 0,
+            ]);
+        }
 
         //Send otp
         $otp = $this->OTPService->createOTP($user->id, $validatedData['phone_number']);

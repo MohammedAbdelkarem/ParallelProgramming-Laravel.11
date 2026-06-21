@@ -31,13 +31,14 @@ class WalletService
 
     public function transfer($from, $to, float $amount, $reference, $notes)
     {
-        TransferJob::dispatch(
-            $from,
-            $to,
-            $amount,
-            $reference,
-            $notes
-        );
+        // TransferJob::dispatch(
+        //     $from,
+        //     $to,
+        //     $amount,
+        //     $reference,
+        //     $notes
+        // );
+        $this->utilityTransfer($from, $to, $amount, $reference, $notes);
     }
 
     public function utilityTransfer($from, $to, float $amount, $reference, $notes)
@@ -125,9 +126,10 @@ class WalletService
 
         // return $result;
 
+        $walletA = Wallet::find(1);
+        $walletB = Wallet::where('user_id' , auth()->id())->first();
 
-        $walletA = Wallet::where('id', min($from, $to))->firstOrFail();
-        $walletB = Wallet::where('id', max($from, $to))->firstOrFail();
+
 
         $fromWallet = $from == $walletA->id ? $walletA : $walletB;
         $toWallet   = $to   == $walletA->id ? $walletA : $walletB;
