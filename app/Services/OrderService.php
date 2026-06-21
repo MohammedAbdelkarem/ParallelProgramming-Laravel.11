@@ -28,28 +28,7 @@ class OrderService
 
     public function addToCart($data)
     {
-        $this->checkProductStock($data['product_id'] , $data['quantity']);
-
-        $user_id = auth()->id();
-
-        $data['user_id'] = $user_id;
-
-        $orderId = $this->getOrderId($data['user_id']);
-    
-        $order = Order::where('id', $orderId)->firstOrFail();
-
-        // Lock the product row
-        $product = Product::where('id', $data['product_id'])
-            ->firstOrFail();
-
-
-        $this->createOrderItem(
-            $order, 
-            $product, 
-            $this->data
-        );
-
-        // CartJob::dispatch($data);
+        CartJob::dispatch($data);
     }
 
     public function removeFromCart($orderItemId)
@@ -194,16 +173,16 @@ class OrderService
         );
     }
 
-    public function getOrderId($user_id)
+    public function getOrderId()
     {
         $order = Order::where('status' , OrderStatusEnum::PENDING->value)
-            ->where('user_id' , $user_id)->first();
+            ->where('user_id' , auth()->id())->first();
 
         if($order)
             return $order->id;
 
         $order = Order::create([
-            'user_id' => $user_id,
+            'user_id' => auth()->id(),
             'price' => 0,
             'quantity' => 0,
         ]);
@@ -223,18 +202,15 @@ class OrderService
     {
         $orderItem = OrderItem::create([
             'order_id' => $order->id,
-            'user_id' => $data['user_id'],
+            'user_id' => auth()->id(),
             'product_id' => $data['product_id'],
             'original_price' => $product->price,
             'price' => $product->price * $data['quantity'],
             'quantity' => $data['quantity'],
         ]);
 
-        $this->processProductStock($data['product_id'], $data['quantity']);
-        $this->processOrderData($order->id, $product->price * $data['quantity'], $data['quantity']);
 
-
-        // return $orderItem->fresh();
+        return $orderItem->fresh();
     }
 
     public function processProductStock($productId , $quantity , $increase = false)
