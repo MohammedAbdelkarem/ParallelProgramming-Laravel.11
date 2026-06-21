@@ -33,165 +33,165 @@ class WalletService
     {
         $user_id = auth()->id();
 
-        TransferJob::dispatch(
-            $from,
-            $to,
-            $amount,
-            $reference,
-            $notes,
-            $user_id
-        );
-        // $this->utilityTransfer($from, $to, $amount, $reference, $notes);
+        // TransferJob::dispatch(
+        //     $from,
+        //     $to,
+        //     $amount,
+        //     $reference,
+        //     $notes,
+        //     $user_id
+        // );
+        $this->utilityTransfer($from, $to, $amount, $reference, $notes , $user_id);
     }
 
     public function utilityTransfer($from, $to, float $amount, $reference, $notes , $user_id)
     {
         // 1️⃣ إنشاء القفل الموزع على مستوى الـ RAM (ينتهي تلقائياً بعد 10 ثوانٍ)
-        $lock = Cache::lock("lock:wallet:transfer:from:{$from}", 10);
+        // $lock = Cache::lock("lock:wallet:transfer:from:{$from}", 10);
 
-        // 2️⃣ محاولة الحصول على القفل فوراً، إذا فشل (بسبب طلب متزامن) يرتد الكود هنا دون انتظار
-        if (! $lock->get()) {
-            return forbiddenFailure(
-                ['wallet_id' => $from],
-                "هناك عملية تحويل معلقة قيد المعالجة حالياً لهذه المحفظة، يرجى الانتظار."
-            );
-        }
-
-        // 3️⃣ تنفيذ العملية المالية بأمان بعد ضمان انفراد هذا الطلب بالسيرفر
-        $result = DB::transaction(function () use ($from, $to, $amount, $reference, $notes, $user_id) {
-            
-            // ترتيب الأقفال لمنع الـ Deadlock داخل قاعدة البيانات كما هو في كودك الأصلي
-            // $walletA = Wallet::where('id', min($from, $to))->lockForUpdate()->firstOrFail();
-            // $walletB = Wallet::where('id', max($from, $to))->lockForUpdate()->firstOrFail();
-           $walletA = Wallet::find(1);
-            $walletB = Wallet::where('user_id' , $user_id)->first(); 
-
-            $fromWallet = $from == $walletA->id ? $walletA : $walletB;
-            $toWallet   = $to   == $walletA->id ? $walletA : $walletB;
-
-            // التحقق من الرصيد
-            if ($fromWallet->balance < $amount) {
-                return forbiddenFailure(
-                    ['available' => (int)$fromWallet->balance, 'amount' => $amount],
-                    ExceptionMessages::MSG_AMOUNT_BIGGER_THAN_AVAILABLE
-                );
-            }
-
-            // تجهيز البيانات الديناميكية (Polymorphic)
-            $fromType = get_class($fromWallet->user);
-            $toType   = get_class($toWallet->user);
-            $refType  = Order::class;
-
-            $fromName = class_basename($fromType);
-            $toName   = class_basename($toType);
-            $refName  = class_basename($reference) ?? null;
-
-            // 🟢 خصم المحفظة المرسِلة وتسجيل المعاملة
-            WalletTransaction::create([
-                'wallet_id' => $fromWallet->id,
-                'type' => WalletTransactionEnum::DEBIT->value,
-                'amount' => $amount,
-                'from_id' => $fromWallet->user_id,
-                'from_type' => $fromType,
-                'to_id' => $toWallet->user_id,
-                'to_type' => $toType,
-                'reference_id' => $reference->id,
-                'reference_type' => $refType,
-                'description' => "Debit from {$fromName} to {$toName} for {$refName}",
-                'notes' => $notes,
-            ]);
-            $fromWallet->decrement('balance', $amount);
-
-            // 🔵 شحن المحفظة المستقبلة وتسجيل المعاملة
-            WalletTransaction::create([
-                'wallet_id' => $toWallet->id,
-                'type' => WalletTransactionEnum::CREDIT->value,
-                'amount' => $amount,
-                'from_id' => $fromWallet->user_id,
-                'from_type' => $fromType,
-                'to_id' => $toWallet->user_id,
-                'to_type' => $toType,
-                'reference_id' => $reference->id,
-                'reference_type' => $refType,
-                'description' => "Credit to {$toName} from {$fromName} for {$refName}",
-                'notes' => $notes,
-            ]);
-            $toWallet->increment('balance', $amount);
-
-            // تحديث حالة الطلب إن وُجد
-            if ($reference instanceof Order) {
-                $reference->update(['status' => OrderStatusEnum::PAID->value]);
-            }
-
-            return true;
-        });
-
-        // 4️⃣ تحرير القفل الموزع يدوياً فور انتهاء المعاملة بنجاح أو فشل الرصيد لفتح المجال للطلبات التالية
-        $lock->release();
-
-        return $result;
-
-        // $walletA = Wallet::find(1);
-        // $walletB = Wallet::where('user_id' , auth()->id())->first();
-
-
-
-        // $fromWallet = $from == $walletA->id ? $walletA : $walletB;
-        // $toWallet   = $to   == $walletA->id ? $walletA : $walletB;
-
-        // // التحقق من الرصيد
-        // if ($fromWallet->balance < $amount) {
+        // // 2️⃣ محاولة الحصول على القفل فوراً، إذا فشل (بسبب طلب متزامن) يرتد الكود هنا دون انتظار
+        // if (! $lock->get()) {
         //     return forbiddenFailure(
-        //         ['available' => (int)$fromWallet->balance, 'amount' => $amount],
-        //         ExceptionMessages::MSG_AMOUNT_BIGGER_THAN_AVAILABLE
+        //         ['wallet_id' => $from],
+        //         "هناك عملية تحويل معلقة قيد المعالجة حالياً لهذه المحفظة، يرجى الانتظار."
         //     );
         // }
 
-        // // تجهيز البيانات الديناميكية (Polymorphic)
-        // $fromType = get_class($fromWallet->user);
-        // $toType   = get_class($toWallet->user);
-        // $refType  = Order::class;
+        // // 3️⃣ تنفيذ العملية المالية بأمان بعد ضمان انفراد هذا الطلب بالسيرفر
+        // $result = DB::transaction(function () use ($from, $to, $amount, $reference, $notes, $user_id) {
+            
+        //     // ترتيب الأقفال لمنع الـ Deadlock داخل قاعدة البيانات كما هو في كودك الأصلي
+        //     // $walletA = Wallet::where('id', min($from, $to))->lockForUpdate()->firstOrFail();
+        //     // $walletB = Wallet::where('id', max($from, $to))->lockForUpdate()->firstOrFail();
+        //    $walletA = Wallet::find(1);
+        //     $walletB = Wallet::where('user_id' , $user_id)->first(); 
 
-        // $fromName = class_basename($fromType);
-        // $toName   = class_basename($toType);
-        // $refName  = class_basename($reference) ?? null;
+        //     $fromWallet = $from == $walletA->id ? $walletA : $walletB;
+        //     $toWallet   = $to   == $walletA->id ? $walletA : $walletB;
 
-        // // 🟢 خصم المحفظة المرسِلة وتسجيل المعاملة
-        // WalletTransaction::create([
-        //     'wallet_id' => $fromWallet->id,
-        //     'type' => WalletTransactionEnum::DEBIT->value,
-        //     'amount' => $amount,
-        //     'from_id' => $fromWallet->user_id,
-        //     'from_type' => $fromType,
-        //     'to_id' => $toWallet->user_id,
-        //     'to_type' => $toType,
-        //     'reference_id' => $reference->id,
-        //     'reference_type' => $refType,
-        //     'description' => "Debit from {$fromName} to {$toName} for {$refName}",
-        //     'notes' => $notes,
-        // ]);
-        // $fromWallet->decrement('balance', $amount);
+        //     // التحقق من الرصيد
+        //     if ($fromWallet->balance < $amount) {
+        //         return forbiddenFailure(
+        //             ['available' => (int)$fromWallet->balance, 'amount' => $amount],
+        //             ExceptionMessages::MSG_AMOUNT_BIGGER_THAN_AVAILABLE
+        //         );
+        //     }
 
-        // // 🔵 شحن المحفظة المستقبلة وتسجيل المعاملة
-        // WalletTransaction::create([
-        //     'wallet_id' => $toWallet->id,
-        //     'type' => WalletTransactionEnum::CREDIT->value,
-        //     'amount' => $amount,
-        //     'from_id' => $fromWallet->user_id,
-        //     'from_type' => $fromType,
-        //     'to_id' => $toWallet->user_id,
-        //     'to_type' => $toType,
-        //     'reference_id' => $reference->id,
-        //     'reference_type' => $refType,
-        //     'description' => "Credit to {$toName} from {$fromName} for {$refName}",
-        //     'notes' => $notes,
-        // ]);
-        // $toWallet->increment('balance', $amount);
+        //     // تجهيز البيانات الديناميكية (Polymorphic)
+        //     $fromType = get_class($fromWallet->user);
+        //     $toType   = get_class($toWallet->user);
+        //     $refType  = Order::class;
 
-        // // تحديث حالة الطلب إن وُجد
-        // if ($reference instanceof Order) {
-        //     $reference->update(['status' => OrderStatusEnum::PAID->value]);
-        // }
+        //     $fromName = class_basename($fromType);
+        //     $toName   = class_basename($toType);
+        //     $refName  = class_basename($reference) ?? null;
+
+        //     // 🟢 خصم المحفظة المرسِلة وتسجيل المعاملة
+        //     WalletTransaction::create([
+        //         'wallet_id' => $fromWallet->id,
+        //         'type' => WalletTransactionEnum::DEBIT->value,
+        //         'amount' => $amount,
+        //         'from_id' => $fromWallet->user_id,
+        //         'from_type' => $fromType,
+        //         'to_id' => $toWallet->user_id,
+        //         'to_type' => $toType,
+        //         'reference_id' => $reference->id,
+        //         'reference_type' => $refType,
+        //         'description' => "Debit from {$fromName} to {$toName} for {$refName}",
+        //         'notes' => $notes,
+        //     ]);
+        //     $fromWallet->decrement('balance', $amount);
+
+        //     // 🔵 شحن المحفظة المستقبلة وتسجيل المعاملة
+        //     WalletTransaction::create([
+        //         'wallet_id' => $toWallet->id,
+        //         'type' => WalletTransactionEnum::CREDIT->value,
+        //         'amount' => $amount,
+        //         'from_id' => $fromWallet->user_id,
+        //         'from_type' => $fromType,
+        //         'to_id' => $toWallet->user_id,
+        //         'to_type' => $toType,
+        //         'reference_id' => $reference->id,
+        //         'reference_type' => $refType,
+        //         'description' => "Credit to {$toName} from {$fromName} for {$refName}",
+        //         'notes' => $notes,
+        //     ]);
+        //     $toWallet->increment('balance', $amount);
+
+        //     // تحديث حالة الطلب إن وُجد
+        //     if ($reference instanceof Order) {
+        //         $reference->update(['status' => OrderStatusEnum::PAID->value]);
+        //     }
+
+        //     return true;
+        // });
+
+        // // 4️⃣ تحرير القفل الموزع يدوياً فور انتهاء المعاملة بنجاح أو فشل الرصيد لفتح المجال للطلبات التالية
+        // $lock->release();
+
+        // return $result;
+
+        $walletA = Wallet::find(1);
+        $walletB = Wallet::where('user_id' , auth()->id())->first();
+
+
+
+        $fromWallet = $from == $walletA->id ? $walletA : $walletB;
+        $toWallet   = $to   == $walletA->id ? $walletA : $walletB;
+
+        // التحقق من الرصيد
+        if ($fromWallet->balance < $amount) {
+            return forbiddenFailure(
+                ['available' => (int)$fromWallet->balance, 'amount' => $amount],
+                ExceptionMessages::MSG_AMOUNT_BIGGER_THAN_AVAILABLE
+            );
+        }
+
+        // تجهيز البيانات الديناميكية (Polymorphic)
+        $fromType = get_class($fromWallet->user);
+        $toType   = get_class($toWallet->user);
+        $refType  = Order::class;
+
+        $fromName = class_basename($fromType);
+        $toName   = class_basename($toType);
+        $refName  = class_basename($reference) ?? null;
+
+        // 🟢 خصم المحفظة المرسِلة وتسجيل المعاملة
+        WalletTransaction::create([
+            'wallet_id' => $fromWallet->id,
+            'type' => WalletTransactionEnum::DEBIT->value,
+            'amount' => $amount,
+            'from_id' => $fromWallet->user_id,
+            'from_type' => $fromType,
+            'to_id' => $toWallet->user_id,
+            'to_type' => $toType,
+            'reference_id' => $reference->id,
+            'reference_type' => $refType,
+            'description' => "Debit from {$fromName} to {$toName} for {$refName}",
+            'notes' => $notes,
+        ]);
+        $fromWallet->decrement('balance', $amount);
+
+        // 🔵 شحن المحفظة المستقبلة وتسجيل المعاملة
+        WalletTransaction::create([
+            'wallet_id' => $toWallet->id,
+            'type' => WalletTransactionEnum::CREDIT->value,
+            'amount' => $amount,
+            'from_id' => $fromWallet->user_id,
+            'from_type' => $fromType,
+            'to_id' => $toWallet->user_id,
+            'to_type' => $toType,
+            'reference_id' => $reference->id,
+            'reference_type' => $refType,
+            'description' => "Credit to {$toName} from {$fromName} for {$refName}",
+            'notes' => $notes,
+        ]);
+        $toWallet->increment('balance', $amount);
+
+        // تحديث حالة الطلب إن وُجد
+        if ($reference instanceof Order) {
+            $reference->update(['status' => OrderStatusEnum::PAID->value]);
+        }
 
         // return true;
     }

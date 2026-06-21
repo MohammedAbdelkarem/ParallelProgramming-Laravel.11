@@ -34,7 +34,22 @@ class OrderService
 
         $data['user_id'] = $user_id;
 
-        CartJob::dispatch($data);
+        $orderId = $this->getOrderId($data['user_id']);
+    
+        $order = Order::where('id', $orderId)->firstOrFail();
+
+        // Lock the product row
+        $product = Product::where('id', $data['product_id'])
+            ->firstOrFail();
+
+
+        $this->createOrderItem(
+            $order, 
+            $product, 
+            $this->data
+        );
+
+        // CartJob::dispatch($data);
     }
 
     public function removeFromCart($orderItemId)
